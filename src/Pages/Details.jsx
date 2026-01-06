@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 const articles = [
   {
     id: 1,
@@ -96,7 +98,6 @@ const Details = () => {
 
         {/* Related Articles Section */}
         <div className="border-t pt-12">
-
           <div className="bg-gray-50 px-6 py-4 mb-4 flex items-center gap-4">
             <h2 className="text-2xl font-bold text-gray-800">
               Related Stories
@@ -105,9 +106,13 @@ const Details = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {relatedArticles.map((article) => (
-              <div
-                key={article.id}
+            {relatedArticles.map((article, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
                 className="group cursor-pointer transition-transform hover:scale-[1.02]"
               >
                 <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-48 mb-4 overflow-hidden">
@@ -119,7 +124,7 @@ const Details = () => {
                 <div className="text-sm text-gray-600">
                   {article.author} • {article.date}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

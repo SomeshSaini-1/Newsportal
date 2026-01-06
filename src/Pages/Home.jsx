@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
 // import Nav from "../component/Nav";
 import NewsBox from "../component/Newsbox";
+import { motion } from "framer-motion";
 import { Rightbar } from "../component/Rightbar";
+import Newsvideo from "../component/Newsvideo";
 
 const Home = () => {
   const dataarr = [
@@ -55,26 +57,77 @@ const Home = () => {
     },
   ];
 
+  const videoarr = [
+    {
+      title:
+        "'Want to end war, not Ukraine' – Zelenskyy vows not to sign weak peace deal",
+      source: "Reuters / Various",
+      description:
+        "In his New Year's address, Ukrainian President Volodymyr Zelenskyy stated that Ukraine seeks peace but will reject any 'weak' agreement that could prolong the conflict or compromise the country's future.",
+      videoUrl: "/video.mp4",
+    },
+    {
+      title:
+        "'Want to end war, not Ukraine' – Zelenskyy vows not to sign weak peace deal",
+      source: "Reuters / Various",
+      description:
+        "In his New Year's address, Ukrainian President Volodymyr Zelenskyy stated that Ukraine seeks peace but will reject any 'weak' agreement that could prolong the conflict or compromise the country's future.",
+      videoUrl: "/video.mp4",
+    },
+    {
+      title:
+        "'Want to end war, not Ukraine' – Zelenskyy vows not to sign weak peace deal",
+      source: "Reuters / Various",
+      description:
+        "In his New Year's address, Ukrainian President Volodymyr Zelenskyy stated that Ukraine seeks peace but will reject any 'weak' agreement that could prolong the conflict or compromise the country's future.",
+      videoUrl: "/video.mp4",
+    },
+    {
+      title:
+        "'Want to end war, not Ukraine' – Zelenskyy vows not to sign weak peace deal",
+      source: "Reuters / Various",
+      description:
+        "In his New Year's address, Ukrainian President Volodymyr Zelenskyy stated that Ukraine seeks peace but will reject any 'weak' agreement that could prolong the conflict or compromise the country's future.",
+      videoUrl: "/video.mp4",
+    },
+  ];
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-white">
-
-
+    <motion.div
+      variants={{
+        // hidden: { opacity: 0, y: 20 },
+        // visible: { opacity: 1, y: 0 },
+        hidden: { opacity: 0, y: 30 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      initial="hidden"
+      animate="visible"
+      transition={{ duration: 1.2 }}
+      className="min-h-screen bg-white"
+    >
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
         {/* Left Column - Top Stories */}
+
         <div className="flex-1">
           <h2 className="text-2xl font-bold mb-4 border-b-2 border-orange-500 inline-block">
             Top Stories
           </h2>
+
           <div className="grid grid-cols-1 gap-6">
             {/* Main Story */}
-            <div className="md:col-span-1 shadow-lg p-2 group cursor-pointer"  onClick={() =>  navigate("/details")}>
-              <div className="bg-gray-200 border-2  rounded-xl w-full h-96 mb-4 bg-cover bg-center transition-transform 
+            <div
+              className="md:col-span-1 shadow-lg p-2 group cursor-pointer"
+              onClick={() => navigate("/details")}
+            >
+              <div
+                className="bg-gray-200 border-2  rounded-xl w-full h-96 mb-4 bg-cover bg-center transition-transform 
               group-hover:scale-[1.02]"
-                style={{ backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')` }} // Use first image or add carousel
+                style={{
+                  backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')`,
+                }} // Use first image or add carousel
               ></div>{" "}
               {/* Placeholder for large image */}
               <h3 className="text-xl font-bold mb-2 leading-tight group-hover:text-red-700 transition-colors">
@@ -93,11 +146,17 @@ const Home = () => {
             {/* Smaller Stories */}
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div  className="group cursor-pointer" onClick={() =>  navigate("/details")}>
-                <div className="bg-gray-200 border-2  rounded-xl w-full h-48 mb-4 bg-cover bg-center
+              <div
+                className="group cursor-pointer"
+                onClick={() => navigate("/details")}
+              >
+                <div
+                  className="bg-gray-200 border-2  rounded-xl w-full h-48 mb-4 bg-cover bg-center
                  transition-transform group-hover:scale-[1.02]"
-                style={{ backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')` }} // Use first image or add carousel
-              ></div>
+                  style={{
+                    backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')`,
+                  }} // Use first image or add carousel
+                ></div>
                 <h4 className="font-semibold leading-tight mb-1 group-hover:text-red-700 transition-colors">
                   Dehradun, Bareilly, Tamil Nadu attack— Indians are turning
                   violent. Don't keep blaming politics
@@ -107,10 +166,16 @@ const Home = () => {
                 </p>
               </div>
 
-                  <div  className="group cursor-pointer"  onClick={() =>  navigate("/details")}>
-                <div className="bg-gray-200 border-2  rounded-xl w-full h-48 mb-4 bg-cover bg-center transition-transform group-hover:scale-[1.02]"
-                style={{ backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')` }} // Use first image or add carousel
-              ></div>
+              <div
+                className="group cursor-pointer"
+                onClick={() => navigate("/details")}
+              >
+                <div
+                  className="bg-gray-200 border-2  rounded-xl w-full h-48 mb-4 bg-cover bg-center transition-transform group-hover:scale-[1.02]"
+                  style={{
+                    backgroundImage: `url('https://i.dawn.com/large/2026/01/01123757285fa9b.webp')`,
+                  }} // Use first image or add carousel
+                ></div>
                 <h4 className="font-semibold leading-tight mb-1 group-hover:text-red-700 transition-colors">
                   Dehradun, Bareilly, Tamil Nadu attack— Indians are turning
                   violent. Don't keep blaming politics
@@ -139,11 +204,50 @@ const Home = () => {
         </button>
       </div>
 
-      <NewsBox dataarr={dataarr} title={"Latest"}/>
-      <NewsBox dataarr={dataarr} title={"Opinion"}/>
-      <NewsBox dataarr={dataarr} title={"Politics"}/>
-      <NewsBox dataarr={dataarr} title={"Ground Reports"}/>
-    </div>
+      <div className="space-y-4">
+        {/* {[
+          { title: "Latest", data: dataarr },
+          { title: "Ground Reports", data: dataarr },
+        ].map((ele, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            viewport={{ once: true }}
+          >
+            <NewsBox dataarr={ele.data} title={ele.title} />
+          </motion.div>
+        ))}
+         */}
+
+        <NewsBox dataarr={dataarr} title={"Latest"} />
+
+        <NewsBox dataarr={dataarr} title={"Ground Reports"} />
+      </div>
+
+      <div className="my-4 flex items-center justify-center gap-4">
+        {/* {[
+          { title: "Opinion", data: dataarr },
+          { title: "Politics", data: dataarr },
+          // { title: "Ground Reports", data: dataarr }
+        ].map((ele, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: index * 0.1 }}
+            viewport={{ once: true }}
+          >
+            
+            <NewsBox dataarr={ele.data} title={ele.title} width={14} />
+          </motion.div>
+        ))} */}
+
+        <NewsBox dataarr={dataarr} title={"Opinion"} />
+        <Newsvideo dataarr={videoarr} title={"Politics"} />
+      </div>
+    </motion.div>
   );
 };
 

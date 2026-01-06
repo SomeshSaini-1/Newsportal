@@ -1,77 +1,93 @@
 // src/pages/Health.jsx
-import React from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import React from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const articles = [
   {
     id: 1,
-    title: "Muscle tissue damage, hormone imbalances: Hard workouts can lead to overtraining syndrome",
+    title:
+      "Muscle tissue damage, hormone imbalances: Hard workouts can lead to overtraining syndrome",
     category: "Fitness",
     author: "Nicole Blades",
     date: "January 2, 2026",
-    image: "https://images.unsplash.com/photo-1571019613454-1f929c9b1f94?auto=format&fit=crop&q=80&w=2340",
+    image:
+      "https://images.unsplash.com/photo-1571019613454-1f929c9b1f94?auto=format&fit=crop&q=80&w=2340",
     isFeatured: true,
-    big: true
+    big: true,
   },
   {
     id: 2,
-    title: "Heavy screen time for young children 'altered brain networks', linked to teen anxiety, research finds",
+    title:
+      "Heavy screen time for young children 'altered brain networks', linked to teen anxiety, research finds",
     author: null,
     date: "December 28, 2025",
-    image: "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&q=80&w=2340"
+    image:
+      "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&q=80&w=2340",
   },
   {
     id: 3,
-    title: "A Pune startup is transforming radiology screening with AI. How it could fill crucial gap in healthcare",
+    title:
+      "A Pune startup is transforming radiology screening with AI. How it could fill crucial gap in healthcare",
     author: "Udit Bubna",
     date: "December 6, 2025",
-    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=2340"
+    image:
+      "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=2340",
   },
   {
     id: 4,
     title: "How gut microbes impact sleep quality",
-    excerpt: "A recent study suggests that gut microbiota composition may significantly influence sleep architecture and quality.",
+    excerpt:
+      "A recent study suggests that gut microbiota composition may significantly influence sleep architecture and quality.",
     source: "The Conversation",
     date: "November 30, 2025",
-    image: "https://images.unsplash.com/photo-1541783245831-57d8e0c4df0d?auto=format&fit=crop&q=80&w=800"
+    image:
+      "https://images.unsplash.com/photo-1541783245831-57d8e0c4df0d?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: 5,
     title: "China's new method to boost birth rates — adding tax to condoms",
-    excerpt: "Revised VAT law removes exemption from condoms, now subject to 13% tax...",
+    excerpt:
+      "Revised VAT law removes exemption from condoms, now subject to 13% tax...",
     source: "Bloomberg News",
     date: "December 3, 2025",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800"
+    image:
+      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: 6,
-    title: "Weight-loss drugs are changing. Here's what to know about the new GLP-1s",
+    title:
+      "Weight-loss drugs are changing. Here's what to know about the new GLP-1s",
     source: "Bloomberg News",
     date: "December 20, 2025",
-    image: "https://images.unsplash.com/photo-1586776977679-c3e537df50a0?auto=format&fit=crop&q=80&w=800"
+    image:
+      "https://images.unsplash.com/photo-1586776977679-c3e537df50a0?auto=format&fit=crop&q=80&w=800",
   },
   {
     id: 7,
-    title: "Should you get screened for breast cancer annually? New study suggests better approach",
+    title:
+      "Should you get screened for breast cancer annually? New study suggests better approach",
     date: "December 25, 2025",
-    image: "https://images.unsplash.com/photo-1579684384363-097e9a8d8c5a?auto=format&fit=crop&q=80&w=800",
-    category: "Opinion"
+    image:
+      "https://images.unsplash.com/photo-1579684384363-097e9a8d8c5a?auto=format&fit=crop&q=80&w=800",
+    category: "Opinion",
   },
   {
     id: 8,
     title: "How Gen-Z is changing the violent nature of protests worldwide",
     source: "ThePrint Exclusive",
     date: "December 15, 2025",
-    image: "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=800"
-  }
+    image:
+      "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&q=80&w=800",
+  },
 ];
 
 const Category = () => {
   const params = useParams();
   const navigate = useNavigate();
-  const featuredMain = articles.find(a => a.isFeatured && a.big);
-  const featuredSide = articles.filter(a => !a.isFeatured && a.id <= 3);
-  const regularArticles = articles.filter(a => a.id > 3);
+  const featuredMain = articles.find((a) => a.isFeatured && a.big);
+  const featuredSide = articles.filter((a) => !a.isFeatured && a.id <= 3);
+  const regularArticles = articles.filter((a) => a.id > 3);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,14 +96,21 @@ const Category = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{params.data || "Health"}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {params.data || "Health"}
+              </h1>
               <p className="text-gray-600 mt-1">
                 Up-to-date coverage of what's happening in the world of health.
               </p>
             </div>
             <nav>
               <ul className="flex gap-6 text-sm font-medium">
-                <li><Link to="/" className="hover:text-blue-600 transition">Home</Link> / {params.data || "Health"}</li>
+                <li>
+                  <Link to="/" className="hover:text-blue-600 transition">
+                    Home
+                  </Link>{" "}
+                  / {params.data || "Health"}
+                </li>
               </ul>
             </nav>
           </div>
@@ -99,7 +122,14 @@ const Category = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-14">
           {/* Main Big Featured */}
           {featuredMain && (
-            <div  onClick={() =>  navigate("/details")} className=" group cursor-pointer relative rounded-2xl overflow-hidden hover:shadow-lg bg-gray-900 aspect-[4/3] lg:aspect-[5/4]">
+            <motion.div
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.8 }}
+              viewport={{ once: true }}
+              onClick={() => navigate("/details")}
+              className=" group cursor-pointer relative rounded-2xl overflow-hidden hover:shadow-lg bg-gray-900 aspect-[4/3] lg:aspect-[5/4]"
+            >
               <img
                 src={featuredMain.image}
                 alt={featuredMain.title}
@@ -121,15 +151,19 @@ const Category = () => {
                   {featuredMain.date}
                 </p>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {/* Side Featured */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-            {featuredSide.map(article => (
-              <div
-                key={article.id}
-                onClick={() =>  navigate("/details")}
+            {featuredSide.map((article, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 60 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                onClick={() => navigate("/details")}
                 className=" group cursor-pointer flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
               >
                 <div className="relative w-full sm:w-5/12 h-48 sm:h-auto">
@@ -149,17 +183,21 @@ const Category = () => {
                     {article.date}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
         {/* Regular Articles Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {regularArticles.map(article => (
-            <div
-              key={article.id}
-              onClick={() =>  navigate("/details")}
+          {regularArticles.map((article, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 60 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              viewport={{ once: true }}
+              onClick={() => navigate("/details")}
               className=" group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
@@ -188,7 +226,7 @@ const Category = () => {
                   {article.source || "Health Desk"} • {article.date}
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 

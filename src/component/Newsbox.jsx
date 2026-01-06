@@ -1,8 +1,14 @@
 import React from "react";
+import {motion} from "framer-motion"
 
-const NewsBox = ({ dataarr, title }) => {
+const NewsBox = ({ dataarr, title, width = 16 }) => {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
+    <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay:  0.8 }}
+            viewport={{ once: true }}
+             className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 font-sans">
       {/* Latest News Section */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         {/* Header */}
@@ -14,10 +20,10 @@ const NewsBox = ({ dataarr, title }) => {
         </div>
 
         {/* News Grid */}
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+        {/* 
+        <div className="flex items-center justify-center flex-wrap gap-6 p-6">
           {dataarr.map((item, index) => (
-            <div key={index} className="group cursor-pointer">
+            <div key={index} className="group cursor-pointer max-w-xl">
               <div
                 className="h-40 bg-gray-200 rounded-lg mb-3 bg-cover bg-center transition-transform group-hover:scale-[1.02]"
                 style={{ backgroundImage: `url('${item.imageUrls[0]}')` }} // Use first image or add carousel
@@ -28,9 +34,37 @@ const NewsBox = ({ dataarr, title }) => {
               <p className="text-sm text-gray-600 font-medium">{item.source}</p>
             </div>
           ))}
+        </div> */}
+
+        <div className="flex justify-center flex-wrap gap-6 p-6">
+          {dataarr.map((item, index) => (
+            <div
+              key={index}
+              className={`group cursor-pointer w-[20rem] sm:w-[${width}rem]`}
+            >
+              {/* Image */}
+              <div
+                className="h-44 rounded-lg mb-3 bg-cover bg-center 
+                   transition-transform duration-300 
+                   group-hover:scale-105"
+                style={{ backgroundImage: `url(${item.imageUrls?.[0]})` }}
+              />
+
+              {/* Content */}
+              <h3
+                className="font-semibold text-gray-900 leading-snug 
+                     mb-1 line-clamp-2 
+                     group-hover:text-red-600 transition-colors"
+              >
+                {item.title}
+              </h3>
+
+              <p className="text-sm text-gray-500 font-medium">{item.source}</p>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
