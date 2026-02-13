@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // added Link for better navigation
 import { useState, useEffect } from "react";
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
@@ -11,7 +11,6 @@ const Details = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch single article details
   useEffect(() => {
     const fetchArticleDetails = async () => {
       setLoading(true);
@@ -19,192 +18,193 @@ const Details = () => {
 
       try {
         const response = await fetch(`${API_BASE_URL}/news/${id}`);
-        const data = await response.json();
+        if (!response.ok) throw new Error("Article not found");
 
-          console.log(data)
-        if (response.ok) {
-          setArticle(data);
-          // Optionally fetch related articles by category
-          if (data?.category) {
-            fetchRelatedArticles(data.category._id, id);
-          }
-        } else {
-          setError(data.message || "Failed to fetch article");
+        const data = await response.json();
+        setArticle(data);
+
+        if (data?.category?._id) {
+          fetchRelatedArticles(data.category._id, id);
         }
       } catch (err) {
-        setError("Failed to connect to server. Please make sure the backend is running.");
-        console.error("Error fetching article:", err);
+        setError(err.message || "Failed to load article");
+        console.error("Article fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchArticleDetails();
-    }
+    if (id) fetchArticleDetails();
   }, [id]);
 
-  // Fetch related articles from same category
-  const fetchRelatedArticles = async (categoryId, currentArticleId) => {
+  const fetchRelatedArticles = async (categoryId, currentId) => {
     try {
-      // console.log(`${API_BASE_URL}/news?category=${categoryId}&limit=6`)
-      const response = await fetch(`${API_BASE_URL}/news?category=${categoryId}&limit=6`);
-      const data = await response.json();
+      const res = await fetch(
+        `${API_BASE_URL}/news?category=${categoryId}&limit=6&status=PUBLISHED`
+      );
+      if (!res.ok) return;
 
-      if (response.ok) {
-        // Filter out current article and limit to 3
-        const filtered = (data.news || [])
-          .filter((item) => item._id !== currentArticleId)
-          .slice(0, 3);
-        setRelatedArticles(filtered);
-      }
+      const { news = [] } = await res.json();
+      const filtered = news
+        .filter((item) => item._id !== currentId)
+        .slice(0, 3);
+      setRelatedArticles(filtered);
     } catch (err) {
-      console.error("Error fetching related articles:", err);
+      console.error("Related articles fetch failed:", err);
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-700 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading article...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading article...</p>
         </div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !article) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
         <div className="text-center max-w-md">
-          <div className="text-red-600 text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Error Loading Article</h2>
-          <p className="text-gray-600">{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!article) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-2">Article Not Found</h2>
-          <p className="text-gray-600">The article you're looking for doesn't exist.</p>
+          <div className="text-red-600 text-6xl mb-6">⚠️</div>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">
+            {error ? "Error Loading Article" : "Article Not Found"}
+          </h2>
+          <p className="text-gray-600 mb-6 text-base sm:text-lg">{error || "The requested article doesn't exist."}</p>
+          <Link
+            to="/"
+            className="inline-block bg-red-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-red-700 transition"
+          >
+            Back to Home
+          </Link>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-5xl mx-auto px-4 py-12">
-        {/* Main Article */}
-        <article className="mb-16">
-          
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+    <div className="min-h-screen bg-gray-50">
+      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+        {/* Header / Title */}
+        <header className="mb-10 sm:mb-12 lg:mb-14">
+          {article.category && (
+            <span className="inline-block bg-red-600 text-white px-4 py-1 rounded-full text-sm font-semibold uppercase tracking-wide mb-4">
+              {article.category.name || article.category}
+            </span>
+          )}
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight mb-5 text-gray-900">
             {article.title}
           </h1>
-          {/* Large Image */}
-          {article.thumbnail && (
-            <div className="rounded-xl w-full h-[500px] mb-8 overflow-hidden bg-gray-200">
-              <img
-                        src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
-                alt={article.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.parentElement.style.backgroundImage = 'url(https://via.placeholder.com/1200x500?text=News+Image)';
-                }}
-              />
-            </div>
-          )}
 
-          {/* Category Badge */}
-          {article.category && (
-            <div className="mb-4">
-              <span className="inline-block bg-red-700 text-white px-4 py-1 rounded-full text-sm font-medium">
-                {article.category.name || article.category}
-              </span>
-            </div>
-          )}
+          <div className="flex flex-wrap items-center gap-4 text-gray-600 text-sm sm:text-base">
+            <span className="font-medium">
+              {article.author || "News Desk"}
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <time dateTime={article.publishedAt || article.createdAt}>
+              {new Date(article.publishedAt || article.createdAt).toLocaleDateString("en-IN", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </time>
+          </div>
+        </header>
 
-          <h3 className="text-2xl md:text-3xl font-bold mb-4 leading-tight">
+        {/* Featured Image */}
+        {article.thumbnail && (
+          <div className="rounded-2xl overflow-hidden shadow-lg mb-10 sm:mb-12 bg-gray-100">
+            <img
+              src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
+              alt={article.title}
+              className="w-full h-auto aspect-[16/9] sm:aspect-[4/3] lg:aspect-[16/9] object-cover"
+              loading="eager"
+              onError={(e) => {
+                e.target.src = "https://via.placeholder.com/1200x675?text=Image+Not+Available";
+              }}
+            />
+          </div>
+        )}
+
+        {/* Lead / Short Description */}
+        {article.shortDescription && (
+          <p className="text-xl sm:text-2xl text-gray-800 font-medium leading-relaxed mb-8 sm:mb-10">
             {article.shortDescription}
-          </h3>
+          </p>
+        )}
 
-          <div className="flex items-center gap-4 text-gray-600 mb-8">
-            <span className="font-medium">{article.author || "Unknown Author"}</span>
-            <span>•</span>
-            <time>{new Date(article.publishedAt || article.createdAt).toLocaleDateString('en-US', {
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            })}</time>
-          </div>
-
+        {/* Main Content – using prose for beautiful typography */}
+        <div className="prose prose-base sm:prose-lg lg:prose-xl prose-red max-w-none text-gray-800">
           {article.description && (
-            <p className="text-xl text-gray-800 mb-8 leading-relaxed font-medium">
-              {article.description}
-            </p>
+            <p className="lead">{article.description}</p>
           )}
+          <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        </div>
+      </article>
 
-          <div className="prose prose-lg max-w-none text-gray-800">
-            <div dangerouslySetInnerHTML={{ __html: article.content }} />
-          </div>
-        </article>
-
-        {/* Related Articles Section */}
-        {relatedArticles.length > 0 && (
-          <div className="border-t pt-12">
-            <div className="bg-gray-50 px-6 py-4 mb-8 flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-gray-800">
+      {/* Related Articles */}
+      {relatedArticles.length > 0 && (
+        <section className="bg-white border-t border-gray-200 py-12 sm:py-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-4 mb-8 sm:mb-10">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">
                 Related Stories
               </h2>
-              <div className="flex-1 h-1 bg-red-700"></div>
+              <div className="flex-1 h-1 bg-red-600"></div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {relatedArticles.map((relatedArticle, index) => (
-                <motion.a
-                  key={relatedArticle._id}
-                  href={`/news/${relatedArticle._id}`}
-                  initial={{ opacity: 0, y: 60 }}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+              {relatedArticles.map((rel, idx) => (
+                <motion.article
+                  key={rel._id}
+                  initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
                   viewport={{ once: true }}
-                  className="group cursor-pointer transition-transform hover:scale-[1.02]"
+                  className="group"
                 >
-                  <div className="bg-gray-200 rounded-xl w-full h-48 mb-4 overflow-hidden">
-                    {relatedArticle.thumbnail && (
-                      <img
-                        src={`${import.meta.env.VITE_IMG_URL}${relatedArticle.thumbnail}`}
-                        alt={relatedArticle.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    )}
-                  </div>
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-red-700 transition-colors line-clamp-2">
-                    {relatedArticle.title}
-                  </h3>
-                  <div className="text-sm text-gray-600">
-                    {relatedArticle.author || "Unknown"} • {new Date(relatedArticle.publishedAt || relatedArticle.createdAt).toLocaleDateString()}
-                  </div>
-                </motion.a>
+                  <Link to={`/news/${rel._id}`} className="block">
+                    <div className="rounded-xl overflow-hidden shadow-sm mb-4 aspect-[4/3] bg-gray-100">
+                      {rel.thumbnail ? (
+                        <img
+                          src={`${import.meta.env.VITE_IMG_URL}${rel.thumbnail}`}
+                          alt={rel.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                      )}
+                    </div>
+
+                    <h3 className="font-semibold text-lg sm:text-xl leading-tight mb-2 group-hover:text-red-700 transition-colors line-clamp-2">
+                      {rel.title}
+                    </h3>
+
+                    <p className="text-sm text-gray-600">
+                      {rel.author || "News Desk"} •{" "}
+                      {new Date(rel.publishedAt || rel.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </Link>
+                </motion.article>
               ))}
             </div>
           </div>
-        )}
-      </div>
+        </section>
+      )}
     </div>
   );
 };
 
 export default Details;
-
-
-
 
 
 
