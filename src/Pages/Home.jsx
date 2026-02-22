@@ -556,7 +556,7 @@ const Home = () => {
                         <div className="flex-1 h-1 bg-red-600"></div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 p-5 sm:p-6">
+                      <div className="flex flex-wrap gap-5 overflow-auto w-full sm:gap-6 p-5 sm:p-6">
                         {news.filter((ele) => ele.category?.name === cat.name)
                           .length === 0 ? (
                           <p className="col-span-full text-center text-gray-500 py-8">
@@ -565,18 +565,24 @@ const Home = () => {
                         ) : (
                           news
                             .filter((ele) => ele.category?.name === cat.name)
+                            .slice(0,4)
                             .map((article) => (
+
+                              <div className="w-1/3 sm:w-1/2 lg:w-1/3" key={article._id || article.id}>
+                                
                               <NewsBox
                                 key={article._id || article.id}
                                 news={article}
                                 onClick={() => handleNewsClick(article)}
                               />
+                              </div>
                             ))
                         )}
                       </div>
                     </div>
                   </section>
                 ))}
+
 
                 {/* Shorts / Videos */}
                 {videos.length > 0 && (
@@ -601,8 +607,42 @@ const Home = () => {
                   </section>
                 )}
 
+
+                 {categories?.slice(1)?.map((cat) => (
+                  <section key={cat._id} className="mb-12 md:mb-16">
+                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                      <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
+                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                          {cat.name}
+                        </h2>
+                        <div className="flex-1 h-1 bg-red-600"></div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 p-5 sm:p-6">
+                        {news.filter((ele) => ele.category?.name === cat.name)
+                          .length === 0 ? (
+                          <p className="col-span-full text-center text-gray-500 py-8">
+                            No articles in this category yet
+                          </p>
+                        ) : (
+                          news
+                            .filter((ele) => ele.category?.name === cat.name)
+                            .map((article) => (
+                              <NewsBox
+                                key={article._id || article.id}
+                                news={article}
+                                onClick={() => handleNewsClick(article)}
+                              />
+                            ))
+                        )}
+                      </div>
+                    </div>
+                  </section>
+                ))}
+
+
                 {/* Other Categories */}
-                {categories?.slice(1)?.map((cat) => (
+                {/* {categories?.slice(1)?.map((cat) => (
                   <section key={cat._id} className="mb-12 md:mb-16">
                     <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                       <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
@@ -632,10 +672,13 @@ const Home = () => {
                       </div>
                     </div>
                   </section>
-                ))}
+                ))} */}
+
+
+
 
                 {/* Remaining news (if many) */}
-                {news.length > 11 && (
+                {/* {news.length > 11 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-10">
                     {news.slice(11).map((article) => (
                       <NewsBox
@@ -645,10 +688,10 @@ const Home = () => {
                       />
                     ))}
                   </div>
-                )}
+                )} */}
 
                 {/* Pagination – more touch-friendly */}
-                {totalPages > 1 && (
+                {/* {totalPages > 1 && (
                   <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-8 md:mt-10">
                     <button
                       onClick={() => handlePageChange(page - 1)}
@@ -682,7 +725,7 @@ const Home = () => {
                       Next
                     </button>
                   </div>
-                )}
+                )} */}
               </div>
 
               {/* ─────────────── Sidebar ─────────────── */}

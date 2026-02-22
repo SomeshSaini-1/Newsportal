@@ -1,7 +1,20 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ChevronLeft, ChevronRight, Share2, Download, ZoomIn, ZoomOut, Calendar, Home, Fullscreen } from "lucide-react";
+import { Helmet, HelmetProvider } from 'react-helmet-async';
+
+import {
+  X,
+  ChevronLeft,
+  ChevronRight,
+  Share2,
+  Download,
+  ZoomIn,
+  ZoomOut,
+  Calendar,
+  Home,
+  Fullscreen,
+} from "lucide-react";
 
 // Environment Constants
 const IMG_BASE_URL = import.meta.env.VITE_IMG_URL;
@@ -27,11 +40,11 @@ const EnewsViewer = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/news/getEnews?id=${id}`);
       const data = await response.json();
-      
+
       if (response.ok) {
         const epaper = Array.isArray(data) ? data[0] : data;
         if (!epaper) throw new Error("E-paper not found");
-        
+
         const imgs = Array.isArray(epaper.eimg) ? epaper.eimg : [epaper.eimg];
         setImages(imgs);
         setTitle(epaper.title || "Untitled");
@@ -52,8 +65,8 @@ const EnewsViewer = () => {
   }, [fetchEpaperData]);
 
   // Derived Values
-  const currentImageUrl = images[currentIndex] 
-    ? `${IMG_BASE_URL}/${images[currentIndex].replace(/\\/g, "/")}` 
+  const currentImageUrl = images[currentIndex]
+    ? `${IMG_BASE_URL}/${images[currentIndex].replace(/\\/g, "/")}`
     : "";
 
   // Handlers
@@ -71,8 +84,14 @@ const EnewsViewer = () => {
     }
   }, [currentIndex, images.length]);
 
-  const handleZoomIn = useCallback(() => setZoom((prev) => Math.min(prev + 0.25, 3)), []);
-  const handleZoomOut = useCallback(() => setZoom((prev) => Math.max(prev - 0.25, 0.5)), []);
+  const handleZoomIn = useCallback(
+    () => setZoom((prev) => Math.min(prev + 0.25, 3)),
+    [],
+  );
+  const handleZoomOut = useCallback(
+    () => setZoom((prev) => Math.max(prev - 0.25, 0.5)),
+    [],
+  );
 
   const handleDownload = () => {
     const link = document.createElement("a");
@@ -109,7 +128,10 @@ const EnewsViewer = () => {
     return (
       <div className="fixed inset-0 bg-black flex flex-col items-center justify-center text-white p-4">
         <p className="text-xl mb-4 text-red-400">{error}</p>
-        <button onClick={() => navigate("/enews")} className="flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors">
+        <button
+          onClick={() => navigate("/enews")}
+          className="flex items-center gap-2 px-6 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
+        >
           <Home size={18} /> Back to List
         </button>
       </div>
@@ -117,68 +139,88 @@ const EnewsViewer = () => {
   }
 
   const setFavicon = (url) => {
-  let link = document.querySelector("link[rel*='icon']");
+    let link = document.querySelector("link[rel*='icon']");
 
-  if (!link) {
-    link = document.createElement("link");
-    link.rel = "icon";
-    document.head.appendChild(link);
-  }
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
 
-  link.type = "image/jpeg";  // change based on your file type
-  link.href = url;
-};
+    link.type = "image/jpeg"; // change based on your file type
+    link.href = url;
+  };
 
-// useEffect(()=> {
-    console.log(currentImageUrl);
-    setFavicon(currentImageUrl);
-// },[]);
+  // useEffect(()=> {
+  console.log(currentImageUrl);
+  setFavicon(currentImageUrl);
+  // },[]);
 
   return (
+        <HelmetProvider>
+      <div>
+        <Helmet>
+          <title>{title} | Media Plus News</title>
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={`Read ${title} on Media Plus News`} />
+          <meta property="og:image" content={currentImageUrl} />
+          <meta property="og:type" content="article" />
+          <meta property="og:url" content={window.location.href} />
+        </Helmet>
+        
     <div className="fixed inset-0 z-50 bg-black flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-b from-black/90 to-transparent p-4 flex justify-between items-start text-white z-10">
         <div className="flex-1">
-          <h2 className="font-semibold text-lg md:text-xl mb-1 line-clamp-1">{title}</h2>
+          <h2 className="font-semibold text-lg md:text-xl mb-1 line-clamp-1">
+            {title}
+          </h2>
           <div className="flex items-center gap-4 text-sm text-gray-300">
             <span className="flex items-center gap-1">
               <Calendar size={14} /> {new Date(createdAt).toLocaleDateString()}
             </span>
-            <span>Page {currentIndex + 1} of {images.length}</span>
+            <span>
+              Page {currentIndex + 1} of {images.length}
+            </span>
           </div>
         </div>
-        <button onClick={() => navigate("/enews")} className="p-2 hover:bg-white/10 rounded-full transition-colors ml-4" title="Close (Esc)">
+        <button
+          onClick={() => navigate("/enews")}
+          className="p-2 hover:bg-white/10 rounded-full transition-colors ml-4"
+          title="Close (Esc)"
+        >
           <X size={28} />
         </button>
       </div>
 
       {/* Image Viewer */}
       <div className="flex-1 flex items-center justify-center relative overflow-auto p-4 custom-scrollbar">
-
-        
         <AnimatePresence mode="wait">
-  <motion.img
-    key={currentIndex}
-    src={currentImageUrl}
-    alt={`${title} - Page ${currentIndex + 1}`}
-    className="max-h-full max-w-full object-contain origin-center"
-    initial={{ opacity: 0, scale: zoom }}
-    animate={{ opacity: 1, scale: zoom }}
-    exit={{ opacity: 0, scale: zoom }}
-    transition={{ duration: 0.2, ease: "easeOut" }}
-  />
-</AnimatePresence>
-
-
-
+          <motion.img
+            key={currentIndex}
+            src={currentImageUrl}
+            alt={`${title} - Page ${currentIndex + 1}`}
+            className="max-h-full max-w-full object-contain origin-center"
+            initial={{ opacity: 0, scale: zoom }}
+            animate={{ opacity: 1, scale: zoom }}
+            exit={{ opacity: 0, scale: zoom }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+          />
+        </AnimatePresence>
 
         {currentIndex > 0 && (
-          <button onClick={handlePrevious} className="hidden md:flex absolute left-6 text-white bg-black/50 hover:bg-black/70 p-4 rounded-full transition-colors backdrop-blur-md z-20">
+          <button
+            onClick={handlePrevious}
+            className="hidden md:flex absolute left-6 text-white bg-black/50 hover:bg-black/70 p-4 rounded-full transition-colors backdrop-blur-md z-20"
+          >
             <ChevronLeft size={32} />
           </button>
         )}
         {currentIndex < images.length - 1 && (
-          <button onClick={handleNext} className="hidden md:flex absolute right-6 text-white bg-black/50 hover:bg-black/70 p-4 rounded-full transition-colors backdrop-blur-md z-20">
+          <button
+            onClick={handleNext}
+            className="hidden md:flex absolute right-6 text-white bg-black/50 hover:bg-black/70 p-4 rounded-full transition-colors backdrop-blur-md z-20"
+          >
             <ChevronRight size={32} />
           </button>
         )}
@@ -202,12 +244,20 @@ const EnewsViewer = () => {
             </div> */}
 
             {/* Action Buttons */}
-            <button onClick={handleDownload} className="flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all active:scale-95 shadow-lg">
-              <Fullscreen size={18} /> <span className="hidden sm:inline">Full Page</span>
+            <button
+              onClick={handleDownload}
+              className="flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-xl transition-all active:scale-95 shadow-lg"
+            >
+              <Fullscreen size={18} />{" "}
+              <span className="hidden sm:inline">Full Page</span>
             </button>
-            
-            <button onClick={() => navigate("/enews")} className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10">
-              <Home size={18} /> <span className="hidden sm:inline">Back to List</span>
+
+            <button
+              onClick={() => navigate("/enews")}
+              className="flex items-center gap-2 px-5 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-all border border-white/10"
+            >
+              <Home size={18} />{" "}
+              <span className="hidden sm:inline">Back to List</span>
             </button>
           </div>
 
@@ -217,9 +267,14 @@ const EnewsViewer = () => {
               {images.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => { setCurrentIndex(idx); setZoom(1); }}
+                  onClick={() => {
+                    setCurrentIndex(idx);
+                    setZoom(1);
+                  }}
                   className={`h-1.5 rounded-full transition-all duration-300 ${
-                    idx === currentIndex ? "w-8 bg-blue-500" : "w-2 bg-white/20 hover:bg-white/40"
+                    idx === currentIndex
+                      ? "w-8 bg-blue-500"
+                      : "w-2 bg-white/20 hover:bg-white/40"
                   }`}
                   title={`Go to page ${idx + 1}`}
                 />
@@ -229,6 +284,8 @@ const EnewsViewer = () => {
         </div>
       </div>
     </div>
+      </div>
+    </HelmetProvider>
   );
 };
 

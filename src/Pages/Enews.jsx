@@ -211,13 +211,9 @@
 
 // export default Enews;
 
-
-
-
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Calendar, Eye, Newspaper } from "lucide-react";
+import { Calendar, Eye, Newspaper, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const API_BASE_URL =
@@ -255,15 +251,13 @@ const Enews = () => {
 
   const handleView = (epaper) => {
     // Navigate to viewer page with epaper data
-    navigate(`/enews/${epaper._id}`
-      , { 
-      state: { 
+    navigate(`/enews/${epaper._id}`, {
+      state: {
         images: Array.isArray(epaper.eimg) ? epaper.eimg : [epaper.eimg],
         title: epaper.title,
-        createdAt: epaper.createdAt
-      } 
-    }
-  );
+        createdAt: epaper.createdAt,
+      },
+    });
   };
 
   if (loading) {
@@ -309,7 +303,9 @@ const Enews = () => {
         {epapers.length === 0 ? (
           <div className="text-center py-20">
             <Newspaper size={64} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600 text-lg">No e-papers found for this date</p>
+            <p className="text-gray-600 text-lg">
+              No e-papers found for this date
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -332,19 +328,38 @@ const Enews = () => {
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-bold mb-2 line-clamp-2">{epaper.title}</h3>
+                  <h3 className="font-bold mb-2 line-clamp-2">
+                    {epaper.title}
+                  </h3>
 
                   <div className="text-sm text-gray-600 flex items-center gap-2 mb-3">
                     <Calendar size={14} />
                     {new Date(epaper.createdAt).toLocaleDateString()}
                   </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleView(epaper)}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    >
+                      <Eye size={16} /> View E-Paper
+                    </button>
 
-                  <button
-                    onClick={() => handleView(epaper)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                  >
-                    <Eye size={16} /> View E-Paper
-                  </button>
+                    <Share2
+                      className="m-auto cursor-pointer hover:text-green-600 text-xl  rounded"
+                      onClick={() => {
+                        const data = `${window.location.origin}/enews/${epaper._id}`;
+
+                        navigator.clipboard
+                          .writeText(data)
+                          .then(() => {
+                            alert("Link copied to clipboard!"); // Or use a toast notification
+                          })
+                          .catch((err) => {
+                            console.error("Failed to copy:", err);
+                          });
+                      }}
+                    />
+                  </div>
                 </div>
               </motion.div>
             ))}

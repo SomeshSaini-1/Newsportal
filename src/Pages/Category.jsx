@@ -1,3 +1,300 @@
+// // src/pages/Category.jsx
+// import React, { useEffect, useState } from "react";
+// import { Link, useNavigate, useParams } from "react-router-dom";
+// import { motion } from "framer-motion";
+
+// const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+// const Category = () => {
+//   const params = useParams();
+//   const navigate = useNavigate();
+  
+//   const [news, setNews] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const [page, setPage] = useState(1);
+//   const [totalPages, setTotalPages] = useState(1);
+//   const [hasMore, setHasMore] = useState(true);
+
+//   const fetchNews = async (id, pageNum = 1, append = false) => {
+//     setLoading(true);
+//     setError(null);
+
+//     try {
+//       const url = `${API_BASE_URL}/news?category=${id}&page=${pageNum}&limit=12&status=PUBLISHED`;
+//       const response = await fetch(url);
+//       const data = await response.json();
+
+//       if (response.ok) {
+//         if (append) {
+//           setNews(prev => [...prev, ...(data.news || [])]);
+//         } else {
+//           setNews(data.news || []);
+//         }
+//         setTotalPages(data.totalPages || 1);
+//         setPage(pageNum);
+//         setHasMore(pageNum < (data.totalPages || 1));
+//       } else {
+//         setError(data.message || "Failed to fetch news");
+//       }
+//     } catch (err) {
+//       setError(
+//         "Failed to connect to server. Please make sure the backend is running."
+//       );
+//       console.error("Error fetching news:", err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (params.id) {
+//       fetchNews(params.id, 1, false);
+//       window.scrollTo(0, 0);
+//     }
+//   }, [params.id]);
+
+//   const handleLoadMore = () => {
+//     if (hasMore && !loading) {
+//       fetchNews(params.id, page + 1, true);
+//     }
+//   };
+
+//   const handleArticleClick = (articleId) => {
+//     navigate(`/news/${articleId}`);
+//   };
+
+//   // Split articles into featured and regular
+//   const featuredMain = news.length > 0 ? news[0] : null;
+//   const featuredSide = news.slice(1, 3);
+//   const regularArticles = news.slice(3);
+
+//   if (loading && page === 1) {
+//     return (
+//       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+//         <div className="text-center">
+//           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+//           <p className="text-gray-600">Loading articles...</p>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (error && news.length === 0) {
+//     return (
+//       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+//         <div className="text-center max-w-md">
+//           <div className="text-red-600 text-5xl mb-4">⚠️</div>
+//           <h2 className="text-2xl font-bold mb-2">Error Loading Articles</h2>
+//           <p className="text-gray-600 mb-4">{error}</p>
+//           <button
+//             onClick={() => fetchNews(params.id, 1, false)}
+//             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+//           >
+//             Try Again
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       {/* Header */}
+//       <header className="bg-white border-b border-gray-200">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+//           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+//             <div>
+//               <h1 className="text-3xl font-bold text-gray-900">
+//                 {params.name || "Category"}
+//               </h1>
+//               <p className="text-gray-600 mt-1">
+//                 {news.length > 0 
+//                   ? `${news.length}+ articles in this category`
+//                   : "Up-to-date coverage of what's happening"}
+//               </p>
+//             </div>
+//             <nav>
+//               <ul className="flex gap-2 text-sm font-medium text-gray-600">
+//                 <li>
+//                   <Link to="/" className="hover:text-blue-600 transition">
+//                     Home
+//                   </Link>
+//                 </li>
+//                 <li>/</li>
+//                 <li className="text-gray-900">{params.name || "Category"}</li>
+//               </ul>
+//             </nav>
+//           </div>
+//         </div>
+//       </header>
+
+//       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+//         {news.length === 0 ? (
+//           <div className="text-center py-20">
+//             <div className="text-6xl mb-4">📰</div>
+//             <h2 className="text-2xl font-bold mb-2">No Articles Yet</h2>
+//             <p className="text-gray-600">Check back soon for new content in this category.</p>
+//           </div>
+//         ) : (
+//           <>
+//             {/* Featured Section */}
+//             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-14">
+//               {/* Main Big Featured */}
+//               {featuredMain && (
+//                 <motion.div
+//                   initial={{ opacity: 0, y: 60 }}
+//                   whileInView={{ opacity: 1, y: 0 }}
+//                   transition={{ duration: 0.6 }}
+//                   viewport={{ once: true }}
+//                   onClick={() => handleArticleClick(featuredMain._id)}
+//                   className="group cursor-pointer relative rounded-2xl overflow-hidden hover:shadow-lg bg-gray-900 aspect-[4/3] lg:aspect-[5/4]"
+//                 >
+//                   {featuredMain.thumbnail ? (
+//                     <img
+//                       src={`${import.meta.env.VITE_IMG_URL}${featuredMain.thumbnail}`}
+//                       alt={featuredMain.title}
+//                       className="absolute inset-0 w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-all duration-500"
+//                     />
+//                   ) : (
+//                     <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600" />
+//                   )}
+//                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+//                   <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+//                     {featuredMain.category?.name && (
+//                       <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded mb-4">
+//                         {featuredMain.category.name}
+//                       </span>
+//                     )}
+//                     <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-3 group-hover:text-orange-400 transition-colors">
+//                       {featuredMain.title}
+//                     </h2>
+//                     <p className="text-gray-200 text-sm md:text-base">
+//                       {featuredMain.author && `${featuredMain.author} • `}
+//                       {new Date(featuredMain.publishedAt || featuredMain.createdAt).toLocaleDateString()}
+//                     </p>
+//                   </div>
+//                 </motion.div>
+//               )}
+
+//               {/* Side Featured */}
+//               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
+//                 {featuredSide.map((article, index) => (
+//                   <motion.div
+//                     key={article._id}
+//                     initial={{ opacity: 0, y: 60 }}
+//                     whileInView={{ opacity: 1, y: 0 }}
+//                     transition={{ duration: 0.6, delay: index * 0.1 }}
+//                     viewport={{ once: true }}
+//                     onClick={() => handleArticleClick(article._id)}
+//                     className="group cursor-pointer flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+//                   >
+//                     <div className="relative w-full sm:w-5/12 h-48 sm:h-auto bg-gray-200">
+//                       {article.thumbnail ? (
+//                         <img 
+//                       src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
+//                           alt={article.title}
+//                           className="w-full h-full object-cover"
+//                         />
+//                       ) : (
+//                         <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
+//                       )}
+//                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:from-transparent" />
+//                     </div>
+//                     <div className="p-5 flex-1 flex flex-col">
+//                       <h3 className="font-semibold text-lg leading-tight group-hover:text-red-700 transition-colors line-clamp-3">
+//                         {article.title}
+//                       </h3>
+//                       <p className="mt-auto text-sm text-gray-500 pt-3">
+//                         {article.author && `${article.author} • `}
+//                         {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
+//                       </p>
+//                     </div>
+//                   </motion.div>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Regular Articles Grid */}
+//             {regularArticles.length > 0 && (
+//               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+//                 {regularArticles.map((article, index) => (
+//                   <motion.div
+//                     key={article._id}
+//                     initial={{ opacity: 0, y: 60 }}
+//                     whileInView={{ opacity: 1, y: 0 }}
+//                     transition={{ duration: 0.6, delay: index * 0.1 }}
+//                     viewport={{ once: true }}
+//                     onClick={() => handleArticleClick(article._id)}
+//                     className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+//                   >
+//                     <div className="relative aspect-[16/10] overflow-hidden bg-gray-200">
+//                       {article.thumbnail ? (
+//                         <img
+//                       src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
+//                           // src={article.thumbnail}
+//                           alt={article.title}
+//                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+//                         />
+//                       ) : (
+//                         <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
+//                       )}
+//                       {article.category?.name && (
+//                         <span className="absolute top-4 left-4 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded">
+//                           {article.category.name}
+//                         </span>
+//                       )}
+//                     </div>
+
+//                     <div className="p-5 flex flex-col flex-grow">
+//                       <h3 className="font-bold text-lg leading-tight mb-3 group-hover:text-red-700 transition-colors line-clamp-2">
+//                         {article.title}
+//                       </h3>
+//                       {article.description && (
+//                         <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
+//                           {article.description}
+//                         </p>
+//                       )}
+//                       <div className="text-sm text-gray-500 mt-auto">
+//                         {article.author || "News Desk"} • {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
+//                       </div>
+//                     </div>
+//                   </motion.div>
+//                 ))}
+//               </div>
+//             )}
+
+//             {/* Load More Button */}
+//             {hasMore && (
+//               <div className="mt-16 text-center">
+//                 <button
+//                   onClick={handleLoadMore}
+//                   disabled={loading}
+//                   className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+//                 >
+//                   {loading ? (
+//                     <span className="flex items-center gap-2">
+//                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+//                       Loading...
+//                     </span>
+//                   ) : (
+//                     `Load More Articles`
+//                   )}
+//                 </button>
+//               </div>
+//             )}
+//           </>
+//         )}
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default Category;
+
+
+
+
 // src/pages/Category.jsx
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -6,9 +303,9 @@ import { motion } from "framer-motion";
 const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const Category = () => {
-  const params = useParams();
+  const { id, name } = useParams(); // using both id & name from route
   const navigate = useNavigate();
-  
+
   const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,18 +313,18 @@ const Category = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchNews = async (id, pageNum = 1, append = false) => {
+  const fetchNews = async (categoryId, pageNum = 1, append = false) => {
     setLoading(true);
     setError(null);
 
     try {
-      const url = `${API_BASE_URL}/news?category=${id}&page=${pageNum}&limit=12&status=PUBLISHED`;
+      const url = `${API_BASE_URL}/news?category=${categoryId}&page=${pageNum}&limit=12&status=PUBLISHED`;
       const response = await fetch(url);
       const data = await response.json();
 
       if (response.ok) {
         if (append) {
-          setNews(prev => [...prev, ...(data.news || [])]);
+          setNews((prev) => [...prev, ...(data.news || [])]);
         } else {
           setNews(data.news || []);
         }
@@ -35,28 +332,26 @@ const Category = () => {
         setPage(pageNum);
         setHasMore(pageNum < (data.totalPages || 1));
       } else {
-        setError(data.message || "Failed to fetch news");
+        setError(data.message || "Failed to load articles");
       }
     } catch (err) {
-      setError(
-        "Failed to connect to server. Please make sure the backend is running."
-      );
-      console.error("Error fetching news:", err);
+      setError("Cannot connect to server. Please try again later.");
+      console.error("Category fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (params.id) {
-      fetchNews(params.id, 1, false);
-      window.scrollTo(0, 0);
+    if (id) {
+      fetchNews(id, 1, false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-  }, [params.id]);
+  }, [id]);
 
   const handleLoadMore = () => {
     if (hasMore && !loading) {
-      fetchNews(params.id, page + 1, true);
+      fetchNews(id, page + 1, true);
     }
   };
 
@@ -64,17 +359,17 @@ const Category = () => {
     navigate(`/news/${articleId}`);
   };
 
-  // Split articles into featured and regular
-  const featuredMain = news.length > 0 ? news[0] : null;
+  // Split articles
+  const featuredMain = news[0] || null;
   const featuredSide = news.slice(1, 3);
   const regularArticles = news.slice(3);
 
   if (loading && page === 1) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading articles...</p>
+          <p className="text-gray-600 text-lg">Loading articles...</p>
         </div>
       </div>
     );
@@ -82,14 +377,14 @@ const Category = () => {
 
   if (error && news.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
         <div className="text-center max-w-md">
-          <div className="text-red-600 text-5xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-bold mb-2">Error Loading Articles</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="text-red-600 text-6xl mb-6">⚠️</div>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3">Error Loading Articles</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => fetchNews(params.id, 1, false)}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+            onClick={() => fetchNews(id, 1, false)}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
           >
             Try Again
           </button>
@@ -101,111 +396,115 @@ const Category = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {params.name || "Category"}
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
+                {name || "Category"}
               </h1>
-              <p className="text-gray-600 mt-1">
-                {news.length > 0 
-                  ? `${news.length}+ articles in this category`
-                  : "Up-to-date coverage of what's happening"}
+              <p className="text-gray-600 mt-1 text-sm sm:text-base">
+                {news.length > 0
+                  ? `${news.length}+ articles`
+                  : "Latest stories in this category"}
               </p>
             </div>
-            <nav>
-              <ul className="flex gap-2 text-sm font-medium text-gray-600">
+            <nav className="text-sm sm:text-base">
+              <ul className="flex items-center gap-2 text-gray-600 font-medium">
                 <li>
                   <Link to="/" className="hover:text-blue-600 transition">
                     Home
                   </Link>
                 </li>
-                <li>/</li>
-                <li className="text-gray-900">{params.name || "Category"}</li>
+                <li className="text-gray-400">/</li>
+                <li className="text-gray-900 font-semibold">{name || "Category"}</li>
               </ul>
             </nav>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12">
         {news.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="text-6xl mb-4">📰</div>
-            <h2 className="text-2xl font-bold mb-2">No Articles Yet</h2>
-            <p className="text-gray-600">Check back soon for new content in this category.</p>
+          <div className="text-center py-20 sm:py-32">
+            <div className="text-6xl sm:text-7xl mb-6">📰</div>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-3">No Articles Yet</h2>
+            <p className="text-gray-600 max-w-md mx-auto">
+              Check back later for fresh content in this category.
+            </p>
           </div>
         ) : (
           <>
             {/* Featured Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-14">
-              {/* Main Big Featured */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 mb-12 lg:mb-16">
+              {/* Main Featured */}
               {featuredMain && (
                 <motion.div
-                  initial={{ opacity: 0, y: 60 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
+                  transition={{ duration: 0.7 }}
                   viewport={{ once: true }}
                   onClick={() => handleArticleClick(featuredMain._id)}
-                  className="group cursor-pointer relative rounded-2xl overflow-hidden hover:shadow-lg bg-gray-900 aspect-[4/3] lg:aspect-[5/4]"
+                  className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-shadow"
                 >
-                  {featuredMain.thumbnail ? (
-                    <img
-                      src={`${import.meta.env.VITE_IMG_URL}${featuredMain.thumbnail}`}
-                      alt={featuredMain.title}
-                      className="absolute inset-0 w-full h-full object-cover brightness-90 group-hover:brightness-100 transition-all duration-500"
-                    />
-                  ) : (
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-purple-600" />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                    {featuredMain.category?.name && (
-                      <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs font-bold rounded mb-4">
-                        {featuredMain.category.name}
-                      </span>
+                  <div className="aspect-[4/3] sm:aspect-[16/10] lg:aspect-[5/4] bg-gray-900 relative">
+                    {featuredMain.thumbnail ? (
+                      <img
+                        src={`${import.meta.env.VITE_IMG_URL}${featuredMain.thumbnail}`}
+                        alt={featuredMain.title}
+                        className="absolute inset-0 w-full h-full object-cover brightness-[0.85] group-hover:brightness-100 transition-all duration-500 scale-105 group-hover:scale-100"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-700 to-indigo-700" />
                     )}
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-3 group-hover:text-orange-400 transition-colors">
-                      {featuredMain.title}
-                    </h2>
-                    <p className="text-gray-200 text-sm md:text-base">
-                      {featuredMain.author && `${featuredMain.author} • `}
-                      {new Date(featuredMain.publishedAt || featuredMain.createdAt).toLocaleDateString()}
-                    </p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+
+                    <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 lg:p-8">
+                      {featuredMain.category?.name && (
+                        <span className="inline-block px-3 py-1 bg-red-600 text-white text-xs sm:text-sm font-bold rounded mb-3 sm:mb-4">
+                          {featuredMain.category.name}
+                        </span>
+                      )}
+                      <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-white leading-tight mb-2 sm:mb-3 group-hover:text-orange-300 transition-colors line-clamp-3">
+                        {featuredMain.title}
+                      </h2>
+                      <p className="text-gray-200 text-xs sm:text-sm">
+                        {featuredMain.author && `${featuredMain.author} • `}
+                        {new Date(featuredMain.publishedAt || featuredMain.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
                   </div>
                 </motion.div>
               )}
 
-              {/* Side Featured */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
-                {featuredSide.map((article, index) => (
+              {/* Side Featured Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5 sm:gap-6">
+                {featuredSide.map((article, idx) => (
                   <motion.div
                     key={article._id}
-                    initial={{ opacity: 0, y: 60 }}
+                    initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    transition={{ duration: 0.6, delay: idx * 0.15 }}
                     viewport={{ once: true }}
                     onClick={() => handleArticleClick(article._id)}
-                    className="group cursor-pointer flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300"
+                    className="group flex flex-col sm:flex-row bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer"
                   >
-                    <div className="relative w-full sm:w-5/12 h-48 sm:h-auto bg-gray-200">
+                    <div className="relative w-full sm:w-5/12 lg:w-2/5 aspect-[4/3] sm:aspect-auto bg-gray-200">
                       {article.thumbnail ? (
-                        <img 
-                      src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
+                        <img
+                          src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
                           alt={article.title}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       ) : (
                         <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
                       )}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent sm:from-transparent" />
                     </div>
-                    <div className="p-5 flex-1 flex flex-col">
-                      <h3 className="font-semibold text-lg leading-tight group-hover:text-red-700 transition-colors line-clamp-3">
+                    <div className="p-4 sm:p-5 flex-1 flex flex-col">
+                      <h3 className="font-semibold text-base sm:text-lg leading-tight group-hover:text-red-700 transition-colors line-clamp-3">
                         {article.title}
                       </h3>
-                      <p className="mt-auto text-sm text-gray-500 pt-3">
+                      <p className="mt-auto text-xs sm:text-sm text-gray-600 pt-3">
                         {article.author && `${article.author} • `}
                         {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
                       </p>
@@ -217,46 +516,46 @@ const Category = () => {
 
             {/* Regular Articles Grid */}
             {regularArticles.length > 0 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-                {regularArticles.map((article, index) => (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                {regularArticles.map((article, idx) => (
                   <motion.div
                     key={article._id}
-                    initial={{ opacity: 0, y: 60 }}
+                    initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    transition={{ duration: 0.6, delay: idx * 0.08 }}
                     viewport={{ once: true }}
                     onClick={() => handleArticleClick(article._id)}
-                    className="group cursor-pointer bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+                    className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col cursor-pointer"
                   >
-                    <div className="relative aspect-[16/10] overflow-hidden bg-gray-200">
+                    <div className="relative aspect-[16/9] sm:aspect-[4/3] overflow-hidden bg-gray-100">
                       {article.thumbnail ? (
                         <img
-                      src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
-                          // src={article.thumbnail}
+                          src={`${import.meta.env.VITE_IMG_URL}${article.thumbnail}`}
                           alt={article.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-400" />
+                        <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
                       )}
                       {article.category?.name && (
-                        <span className="absolute top-4 left-4 px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded">
+                        <span className="absolute top-3 left-3 sm:top-4 sm:left-4 px-2.5 py-1 sm:px-3 sm:py-1 bg-blue-600 text-white text-xs font-bold rounded">
                           {article.category.name}
                         </span>
                       )}
                     </div>
 
-                    <div className="p-5 flex flex-col flex-grow">
-                      <h3 className="font-bold text-lg leading-tight mb-3 group-hover:text-red-700 transition-colors line-clamp-2">
+                    <div className="p-4 sm:p-5 flex flex-col flex-grow">
+                      <h3 className="font-bold text-base sm:text-lg leading-tight mb-2 sm:mb-3 group-hover:text-red-700 transition-colors line-clamp-2">
                         {article.title}
                       </h3>
                       {article.description && (
-                        <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-grow">
+                        <p className="text-gray-600 text-sm mb-3 sm:mb-4 line-clamp-2 flex-grow">
                           {article.description}
                         </p>
                       )}
-                      <div className="text-sm text-gray-500 mt-auto">
-                        {article.author || "News Desk"} • {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
+                      <div className="text-xs sm:text-sm text-gray-500 mt-auto">
+                        {article.author || "News Desk"} •{" "}
+                        {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
                       </div>
                     </div>
                   </motion.div>
@@ -264,21 +563,21 @@ const Category = () => {
               </div>
             )}
 
-            {/* Load More Button */}
+            {/* Load More */}
             {hasMore && (
-              <div className="mt-16 text-center">
+              <div className="mt-12 sm:mt-16 lg:mt-20 text-center">
                 <button
                   onClick={handleLoadMore}
                   disabled={loading}
-                  className="px-10 py-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-8 sm:px-12 py-3 sm:py-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed min-w-[180px] sm:min-w-[220px]"
                 >
                   {loading ? (
-                    <span className="flex items-center gap-2">
+                    <span className="flex items-center justify-center gap-2">
                       <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
                       Loading...
                     </span>
                   ) : (
-                    `Load More Articles`
+                    "Load More Articles"
                   )}
                 </button>
               </div>
@@ -291,9 +590,6 @@ const Category = () => {
 };
 
 export default Category;
-
-
-
 
 
 
