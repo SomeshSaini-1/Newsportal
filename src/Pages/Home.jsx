@@ -350,14 +350,13 @@
 
 // export default Home;
 
-
-
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import NewsBox from "../component/Newsbox";
 import { motion } from "framer-motion";
 import { Rightbar } from "../component/Rightbar";
 import Newsvideo from "../component/Newsvideo";
+import { FcNext } from "react-icons/fc";
 
 const Home = () => {
   const [news, setNews] = useState([]);
@@ -375,7 +374,7 @@ const Home = () => {
   const API_BASE_URL = import.meta.env.VITE_API_URL;
 
   // ── fetch functions remain the same ──
-  
+
   // Fetch categories
   const fetchCategories = async () => {
     try {
@@ -424,7 +423,9 @@ const Home = () => {
   // Fetch videos
   const fetchVideos = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/videos?limit=4&type=Shorts`);
+      const response = await fetch(
+        `${API_BASE_URL}/videos?limit=4&type=Shorts`,
+      );
       const data = await response.json();
       if (response.ok) {
         setVideos(data.videos || []);
@@ -454,8 +455,7 @@ const Home = () => {
     fetchVideos();
   }, []);
 
-  console.log(videos,"news datas")
-
+  console.log(videos, "news datas");
 
   useEffect(() => {
     fetchCategories();
@@ -498,7 +498,7 @@ const Home = () => {
           </div>
         ) : (
           <>
-            <div className="flex flex-col lg:flex-row gap-6 xl:gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-6 xl:gap-8">
               {/* ─────────────── Main Content ─────────────── */}
               <div className="flex-1 order-2 lg:order-1">
                 {/* Top Stories */}
@@ -545,102 +545,6 @@ const Home = () => {
                   </button>
                 </div>
 
-                {/* Categories – first one highlighted */}
-                {categories?.slice(0, 1)?.map((cat) => (
-                  <section key={cat._id} className="mb-12 md:mb-16">
-                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                      <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                          {cat.name}
-                        </h2>
-                        <div className="flex-1 h-1 bg-red-600"></div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-5 overflow-auto w-full sm:gap-6 p-5 sm:p-6">
-                        {news.filter((ele) => ele.category?.name === cat.name)
-                          .length === 0 ? (
-                          <p className="col-span-full text-center text-gray-500 py-8">
-                            No articles in this category yet
-                          </p>
-                        ) : (
-                          news
-                            .filter((ele) => ele.category?.name === cat.name)
-                            .slice(0,4)
-                            .map((article) => (
-
-                              <div className="w-1/3 sm:w-1/2 lg:w-1/3" key={article._id || article.id}>
-                                
-                              <NewsBox
-                                key={article._id || article.id}
-                                news={article}
-                                onClick={() => handleNewsClick(article)}
-                              />
-                              </div>
-                            ))
-                        )}
-                      </div>
-                    </div>
-                  </section>
-                ))}
-
-
-                {/* Shorts / Videos */}
-                {videos.length > 0 && (
-                  <section className="mb-12 md:mb-16">
-                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                      <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                          Shorts
-                        </h2>
-                        <div className="flex-1 h-1 bg-red-600"></div>
-                      </div>
-
-                      <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 p-5 sm:p-6">
-                        {videos.map((video) => (
-                          <Newsvideo
-                            key={video._id || video.id}
-                            video={video}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  </section>
-                )}
-
-
-                 {categories?.slice(1)?.map((cat) => (
-                  <section key={cat._id} className="mb-12 md:mb-16">
-                    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-                      <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
-                        <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-                          {cat.name}
-                        </h2>
-                        <div className="flex-1 h-1 bg-red-600"></div>
-                      </div>
-
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 p-5 sm:p-6">
-                        {news.filter((ele) => ele.category?.name === cat.name)
-                          .length === 0 ? (
-                          <p className="col-span-full text-center text-gray-500 py-8">
-                            No articles in this category yet
-                          </p>
-                        ) : (
-                          news
-                            .filter((ele) => ele.category?.name === cat.name)
-                            .map((article) => (
-                              <NewsBox
-                                key={article._id || article.id}
-                                news={article}
-                                onClick={() => handleNewsClick(article)}
-                              />
-                            ))
-                        )}
-                      </div>
-                    </div>
-                  </section>
-                ))}
-
-
                 {/* Other Categories */}
                 {/* {categories?.slice(1)?.map((cat) => (
                   <section key={cat._id} className="mb-12 md:mb-16">
@@ -673,9 +577,6 @@ const Home = () => {
                     </div>
                   </section>
                 ))} */}
-
-
-
 
                 {/* Remaining news (if many) */}
                 {/* {news.length > 11 && (
@@ -733,6 +634,136 @@ const Home = () => {
                 <Rightbar />
               </aside>
             </div>
+
+            {/* Categories – first one highlighted */}
+            {categories?.slice(0, 1)?.map((cat) => {
+              const filteredNews = news
+                .filter((ele) => ele.category?.name === cat.name)
+                .slice(0, 4); // show 6 in row
+
+              return (
+                <section key={cat._id} className="mb-12 md:mb-16 max-w-7xl">
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    {/* Header */}
+                    <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                        {cat.name}
+                      </h2>
+                      <div className="flex-1 h-1 bg-red-600"></div>
+                    </div>
+
+                    {/* Row Layout */}
+                    <div className="flex gap-6 overflow-x-auto p-5 sm:p-6 scrollbar-hide">
+                      {filteredNews.length === 0 ? (
+                        <p className="text-center text-gray-500 py-8 w-full">
+                          No articles in this category yet
+                        </p>
+                      ) : (
+                        <>
+                          {filteredNews.map((article) => (
+                            <div
+                              key={article._id || article.id}
+                              className="min-w-[20rem] "
+                            >
+                              <NewsBox
+                                news={article}
+                                onClick={() => handleNewsClick(article)}
+                              />
+                            </div>
+                          ))}
+
+                          {/* More Button */}
+                          <div className="min-w-[200px] flex items-center justify-center">
+                            <button
+                              onClick={() => navigate(`/category/${cat._id}`)}
+                              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex gap-2 items-center"
+                            >
+                              More <FcNext/>
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
+
+
+            {/* Shorts / Videos */}
+            {videos.length > 0 && (
+              <section className="mb-12 md:mb-16 max-w-7xl">
+                <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                  <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                      Shorts
+                    </h2>
+                    <div className="flex-1 h-1 bg-red-600"></div>
+                  </div>
+
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-6 p-5 sm:p-6">
+                    {videos.map((video) => (
+                      <Newsvideo key={video._id || video.id} video={video} />
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+
+
+            {categories?.slice(1)?.map((cat) => {
+              const filteredNews = news
+                .filter((ele) => ele.category?.name === cat.name)
+                .slice(0, 4); // show 6 in row
+
+              return (
+                <section key={cat._id} className="mb-12 md:mb-16 max-w-7xl">
+                  <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    {/* Header */}
+                    <div className="bg-gray-50 px-5 sm:px-6 py-4 flex items-center gap-4">
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
+                        {cat.name}
+                      </h2>
+                      <div className="flex-1 h-1 bg-red-600"></div>
+                    </div>
+
+                    {/* Row Layout */}
+                    <div className="flex gap-6 overflow-x-auto p-5 sm:p-6 scrollbar-hide">
+                      {filteredNews.length === 0 ? (
+                        <p className="text-center text-gray-500 py-8 w-full">
+                          No articles in this category yet
+                        </p>
+                      ) : (
+                        <>
+                          {filteredNews.map((article) => (
+                            <div
+                              key={article._id || article.id}
+                              className="max-w-[20rem] "
+                            >
+                              <NewsBox
+                                news={article}
+                                onClick={() => handleNewsClick(article)}
+                              />
+                            </div>
+                          ))}
+
+                          {/* More Button */}
+                          {filteredNews.length > 2 && 
+                          <div className="min-w-[200px] flex items-center justify-center">
+                            <button
+                              onClick={() => navigate(`/category/${cat._id}`)}
+                              className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                            >
+                              More →
+                            </button>
+                          </div>}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </section>
+              );
+            })}
           </>
         )}
       </div>

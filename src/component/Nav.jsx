@@ -574,12 +574,15 @@ const Nav = () => {
               </p>
             </div>
           </div>
+            
+            <Link to={`${import.meta.env.VITE_API_Translate}`}>
+            <img src="/translatelogo.png" className="h-14 rounded-xl p-2 rounded-lg hover:bg-gray-800 cursur-pointer"/>
+            </Link>
 
-          {/* Hamburger for mobile */}
           <button
             className="lg:hidden p-2 rounded-lg hover:bg-gray-800"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label="Toggle menu" 
           >
             {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
           </button>

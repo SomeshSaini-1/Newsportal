@@ -161,6 +161,7 @@ const EnewsViewer = () => {
       <div>
         <Helmet>
           <title>{title} | Media Plus News</title>
+          <link rel="icon" type="image/svg+xml" href={currentImageUrl} />
           <meta property="og:title" content={title} />
           <meta property="og:description" content={`Read ${title} on Media Plus News`} />
           <meta property="og:image" content={currentImageUrl} />

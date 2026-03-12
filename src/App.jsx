@@ -8,6 +8,8 @@ import Enews from './Pages/Enews';
 import Layout from './Layout';  // Import the new Layout
 import Search from './Pages/Search';
 import Enews_file  from './Pages/Enews_file';
+import Terams  from './Pages/Terams';
+import Privacy  from './Pages/Privacy';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +27,14 @@ const router = createBrowserRouter([
       {
         path: "videos",
         element: <Videos />
+      },
+      {
+        path: "Terms",
+        element: <Terams />
+      },
+      {
+        path: "Privacy",
+        element: <Privacy />
       },
       {
         path: "search",
