@@ -6,8 +6,8 @@ const Footer = () => {
       {/* Top black navigation bar */}
       <div className="bg-black text-white py-4 px-6 text-center md:text-left">
         <div className="max-w-7xl mx-auto flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm md:text-base">
-          <a href="/" className="hover:underline">MEDIA PLUS BHARAT HINDI</a>
-          <a href="#" className="hover:underline">MEDIA PLUS NEWS ENGLISH</a>
+          <a href="https://mediaplushbharat.com" className="hover:underline">MEDIA PLUS BHARAT HINDI</a>
+          <a href="https://mediaplusnews.in" className="hover:underline">MEDIA PLUS NEWS ENGLISH</a>
           {/* <a href="#" className="hover:underline">TheNews Speakers Bureau</a>
           <a href="#" className="hover:underline">The School Of Journalism</a> */}
         </div>
@@ -26,8 +26,8 @@ const Footer = () => {
             <a href="#" className="hover:underline">Contact</a>
             {/* <a href="#" className="hover:underline">Synergy</a> */}
             <a href="#" className="hover:underline">Careers</a>
-            <a href="#" className="hover:underline">Terms of Use</a>
-            <a href="#" className="hover:underline">Privacy Policy</a>
+            <a href="/Terms" className="hover:underline">Terms of Use</a>
+            <a href="/Privacy" className="hover:underline">Privacy Policy</a>
           </div>
         </div>
       </div>

@@ -1,184 +1,3 @@
-// import React, { useRef, useEffect } from 'react';
-
-// const trendingNews = [
-
-//   {
-//     title: "Anjel Chakma death is 'wake-up call'. Students from Northeast no longer feel safe in Dehradun",
-//     author: "Krishan Murari",
-//     date: "December 30, 2025",
-//     image: "https://i.ytimg.com/vi/2811QwoB7sc/hq720.jpg", // Protest march in Dehradun
-//   },
-//   {
-//     title: "Jana Nayagan or Raja Saab? Vijay and Prabhas are heading for a box-office clash",
-//     author: "Tina Das",
-//     date: "December 30, 2025",
-//     image: "https://i.redd.it/3w0hsc7madrd1.jpeg", // Vijay vs Prabhas collage/poster style
-//   },
-//   {
-//     title: "Anjel Chakma death is 'wake-up call'. Students from Northeast no longer feel safe in Dehradun",
-//     author: "Krishan Murari",
-//     date: "December 30, 2025",
-//     image: "https://i.ytimg.com/vi/2811QwoB7sc/hq720.jpg", // Protest march in Dehradun
-//   },
-//   {
-//     title: "Jana Nayagan or Raja Saab? Vijay and Prabhas are heading for a box-office clash",
-//     author: "Tina Das",
-//     date: "December 30, 2025",
-//     image: "https://i.redd.it/3w0hsc7madrd1.jpeg", // Vijay vs Prabhas collage/poster style
-//   },
-//   {
-//     title: "Anjel Chakma death is 'wake-up call'. Students from Northeast no longer feel safe in Dehradun",
-//     author: "Krishan Murari",
-//     date: "December 30, 2025",
-//     image: "https://i.ytimg.com/vi/2811QwoB7sc/hq720.jpg", // Protest march in Dehradun
-//   },
-//   {
-//     title: "Jana Nayagan or Raja Saab? Vijay and Prabhas are heading for a box-office clash",
-//     author: "Tina Das",
-//     date: "December 30, 2025",
-//     image: "https://i.redd.it/3w0hsc7madrd1.jpeg", // Vijay vs Prabhas collage/poster style
-//   },
-//   {
-//     title: "Anjel Chakma death is 'wake-up call'. Students from Northeast no longer feel safe in Dehradun",
-//     author: "Krishan Murari",
-//     date: "December 30, 2025",
-//     image: "https://i.ytimg.com/vi/2811QwoB7sc/hq720.jpg", // Protest march in Dehradun
-//   },
-//   {
-//     title: "Jana Nayagan or Raja Saab? Vijay and Prabhas are heading for a box-office clash",
-//     author: "Tina Das",
-//     date: "December 30, 2025",
-//     image: "https://i.redd.it/3w0hsc7madrd1.jpeg", // Vijay vs Prabhas collage/poster style
-//   }
-
-// ];
-
-// export const Rightbar = () => {
-//   const scrollRef = useRef(null);
-
-//   useEffect(() => {
-//     const container = scrollRef.current;
-//     if (!container) return;
-
-//     let animationId;
-//     let scrollAmount = 0;
-//     const speed = 0.5; // Adjust speed (higher = faster scroll)
-
-//     const scroll = () => {
-//       if (container) {
-//         scrollAmount += speed;
-//         container.scrollTop = scrollAmount;
-
-//         // Seamless loop: reset to top when reaching bottom
-//         if (scrollAmount >= container.scrollHeight - container.clientHeight) {
-//           scrollAmount = 0;
-//           container.scrollTop = 0;
-//         }
-//       }
-//       animationId = requestAnimationFrame(scroll);
-//     };
-
-//     animationId = requestAnimationFrame(scroll);
-
-//     // Pause on hover
-//     const pause = () => cancelAnimationFrame(animationId);
-//     const resume = () => (animationId = requestAnimationFrame(scroll));
-
-//     container.addEventListener('mouseenter', pause);
-//     container.addEventListener('mouseleave', resume);
-
-//     return () => {
-//       cancelAnimationFrame(animationId);
-//       container.removeEventListener('mouseenter', pause);
-//       container.removeEventListener('mouseleave', resume);
-//     };
-//   }, []);
-
-  
-//   // Fetch news
-//   const fetchNews = async () => {
-//     setLoading(true);
-//     setError(null);
-
-//     try {
-//       let url = `${API_BASE_URL}/news?limit=20&status=PUBLISHED&trending=true`;
-
-
-//       const response = await fetch(url);
-//       const data = await response.json();
-
-//       if (response.ok) {
-//         setNews(data.news || []);
-        
-//       } else {
-//         setError(data.message || "Failed to fetch news");
-//       }
-//     } catch (err) {
-//       setError(
-//         "Failed to connect to server. Please make sure the backend is running.",
-//       );
-//       console.error("Error fetching news:", err);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-
-//   return (
-//     <div className="lg:w-auto">
-//       <div className="bg-gray-100 p-6 rounded-lg shadow-md">
-//         <h2 className="text-4xl font-bold text-orange-600 mb-4">Trending News</h2>
-        
-        
-//         <div
-//           ref={scrollRef}
-//           className="h-[45rem] overflow-hidden hover:overflow-y-auto transition-all duration-300 space-y-6"
-//         >
-//           {trendingNews.map((item, index) => (
-//             <div
-//               key={index}
-//               className="flex gap-4 bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-//             >
-//               <div className="flex-shrink-0">
-//                 <img
-//                   src={item.image}
-//                   alt={item.title}
-//                   className="w-32 h-24 object-cover rounded border-2 border-gray-300"
-//                 />
-//               </div>
-//               <div>
-//                 <h4 className="font-semibold text-sm line-clamp-3">
-//                   {item.title}
-//                 </h4>
-//                 <p className="text-xs text-gray-600 mt-1">
-//                   {item.author} - {item.date}
-//                 </p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -194,20 +13,20 @@ export const Rightbar = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch trending news
+  // Fetch ताजा खबरें
   const fetchNews = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const url = `${API_BASE_URL}/news?limit=12&status=PUBLISHED&trending=true`;
+      const url = `${API_BASE_URL}/hindinews?limit=12&status=PUBLISHED&trending=true`;
       const response = await fetch(url);
       const data = await response.json();
 
       if (response.ok) {
         setNews(data.news || []);
       } else {
-        setError(data.message || "Failed to fetch trending news");
+        setError(data.message || "Failed to fetch ताजा खबरें");
       }
     } catch (err) {
       setError("Cannot connect to server. Please try again later.");
@@ -277,7 +96,7 @@ export const Rightbar = () => {
     return (
       <aside className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-5 pb-3 border-b-2 border-red-600">
-          Trending Now
+          ताजा खबरें
         </h2>
         <div className="flex items-center justify-center py-12 sm:py-16">
           <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 border-b-2 border-red-600"></div>
@@ -291,7 +110,7 @@ export const Rightbar = () => {
     return (
       <aside className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-5 pb-3 border-b-2 border-red-600">
-          Trending Now
+          ताजा खबरें
         </h2>
         <div className="text-center py-8 sm:py-10">
           <p className="text-red-600 mb-4 text-sm sm:text-base">{error}</p>
@@ -311,10 +130,10 @@ export const Rightbar = () => {
     return (
       <aside className="bg-white rounded-xl shadow-sm p-5 sm:p-6">
         <h2 className="text-xl sm:text-2xl font-bold mb-5 pb-3 border-b-2 border-red-600">
-          Trending Now
+          ताजा खबरें
         </h2>
         <div className="text-center py-8 sm:py-12 text-gray-500 text-sm sm:text-base">
-          No trending stories right now
+          फिलहाल कोई ट्रेंडिंग स्टोरी नहीं है
         </div>
       </aside>
     );
@@ -324,7 +143,7 @@ export const Rightbar = () => {
   return (
     <aside className="bg-white rounded-xl shadow-sm lg:sticky lg:top-6 p-4 sm:p-5 lg:p-6">
       <h2 className="text-xl sm:text-2xl font-bold mb-5 pb-3 border-b-2 border-red-600">
-        Trending Now
+        ताजा खबरें
       </h2>
 
       <div
@@ -365,7 +184,7 @@ export const Rightbar = () => {
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-red-500 to-red-700 flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">NEWS</span>
+                  <span className="text-white text-xs font-bold"> खबरें</span>
                 </div>
               )}
             </div>

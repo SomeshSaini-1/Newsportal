@@ -27,7 +27,7 @@ const Search = () => {
     setError(null);
 
     try {
-      const url = `${API_BASE_URL}/news?search=${encodeURIComponent(searchTerm)}&status=PUBLISHED&limit=50`;
+      const url = `${API_BASE_URL}/hindinews?search=${encodeURIComponent(searchTerm)}&status=PUBLISHED&limit=50`;
       const response = await fetch(url);
       const data = await response.json();
 

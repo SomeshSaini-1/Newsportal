@@ -320,9 +320,11 @@ const Enews = () => {
                 <div className="aspect-[3/4] bg-gray-200">
                   {epaper.eimg?.length && (
                     <img
+                      
+                      onClick={() => handleView(epaper)}
                       src={`${IMG_BASE_URL}/${epaper.eimg[0].replace(/\\/g, "/")}`}
                       alt={epaper.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover cursor-pointer  hover:scale-105 transition-transform"
                     />
                   )}
                 </div>
