@@ -79,6 +79,7 @@ const Details = () => {
     setRelatedLoading(false);
   };
 
+
   const lastArticleRef = useCallback(
     (node) => {
       if (relatedLoading) return; 
@@ -95,6 +96,8 @@ const Details = () => {
     },
     [relatedLoading, hasMore, page, article]
   );
+
+  const [show,setshow] = useState(false);
 
   if (loading) {
     return (
@@ -128,10 +131,24 @@ const Details = () => {
         )}
 
         <div
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: article.content }}
+          className="prose max-w-none font-bold mb-6"
+          dangerouslySetInnerHTML={{ __html: article?.shortDescription }}
         />
+        <div>
+          {/* <br /> */}
 
+          {show ? article.content.split("\n").map((line, index) => (
+            <p key={index} className="mb-4">{line}</p>
+          )) : (
+            <p className="mb-4">
+              {article.content.slice(0,1000).split("\n").map((line, index) => (
+            <p key={index} className="mb-4">{line}</p>
+          ))}...
+             <button onClick={() => setshow(true)} className="w-full  text-red-400 my-8">Read More</button>
+             </p>
+          )}
+        </div>
+          <div></div>
       </article>
 
       {/* Related Articles */}

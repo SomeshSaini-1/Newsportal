@@ -788,6 +788,7 @@ const SkeletonCard = ({ large }) => (
 
 /* ─────────────── Breaking Ticker ─────────────── */
 const BreakingTicker = ({ items }) => {
+    const navigate = useNavigate();
   if (!items?.length) return null;
   const doubled = [...items, ...items]; // seamless loop
   return (
@@ -808,7 +809,8 @@ const BreakingTicker = ({ items }) => {
           transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
         >
           {doubled.map((item, i) => (
-            <span key={i} className="text-sm font-medium">
+            
+            <span key={i} className="text-sm font-medium" onClick={() => navigate(`/news/${item._id}`)} style={{ cursor: "pointer" }}  >
               <span className="mx-2 opacity-50">◆</span>
               {item.title || item}
             </span>

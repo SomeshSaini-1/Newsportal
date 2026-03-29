@@ -47,7 +47,7 @@ const NewsBox = ({ news, size = "normal", onClick }) => {
             size === "large" ? "h-96" : size === "medium" ? "h-48" : "h-44"
           }`}
         >
-          No Image
+          {news.title}
         </div>
       )}
 
